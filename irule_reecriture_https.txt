@@ -1,0 +1,16 @@
+when HTTP_REQUEST {
+   # Je désactive le filtre STREAM pour toutes les requêtes
+   STREAM::disable
+   # Je supprime l'entête "Accept-Encoding"
+   HTTP::header remove "Accept-Encoding"
+}
+when HTTP_RESPONSE {
+    # Je vérifie si la réponse est bien un contenu de type "Text"
+    if {[HTTP::header value Content-Type] contains "text"}{
+        # Je remplace l'url 
+        STREAM::expression {@\u0022//player.vimeo.com@"https://player.vimeo.com@ @\u0022//www.youtube.com@"https://www.youtube.com@ @\u0022//www.instagram.com@"https://www.instagram.com@}
+
+        # J'active le filtre STREAM pour la réponse
+        STREAM::enable
+      }
+}
